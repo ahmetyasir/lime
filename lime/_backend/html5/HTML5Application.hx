@@ -233,7 +233,10 @@ class HTML5Application {
 		updateGameDevices ();
 		
 		currentUpdate = Date.now ().getTime ();
-		
+		if(nextUpdate == -1)
+		{
+			return;
+		}
 		if (currentUpdate >= nextUpdate) {
 			
 			#if stats
@@ -372,6 +375,8 @@ class HTML5Application {
 			
 			framePeriod = 1000 / value;
 			
+		} else if (value == 0){
+			nextUpdate = -1;
 		} else {
 			
 			framePeriod = 1000;
