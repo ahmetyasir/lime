@@ -34,6 +34,7 @@ class HTML5Application {
 	private var lastUpdate:Float;
 	private var nextUpdate:Float;
 	private var parent:Application;
+	private var zeroFPS:Bool = false;
 	#if stats
 	private var stats:Dynamic;
 	#end
@@ -233,10 +234,6 @@ class HTML5Application {
 		updateGameDevices ();
 		
 		currentUpdate = Date.now ().getTime ();
-		if(nextUpdate == -1)
-		{
-			return;
-		}
 		if (currentUpdate >= nextUpdate) {
 			
 			#if stats
@@ -247,7 +244,7 @@ class HTML5Application {
 			
 			parent.onUpdate.dispatch (Std.int (deltaTime));
 			
-			if (parent.renderer != null && parent.renderer.context != null) {
+			if (parent.renderer != null && parent.renderer.context != null && zeroFPS == false) {
 				
 				parent.renderer.render ();
 				parent.renderer.onRender.dispatch ();
@@ -370,16 +367,18 @@ class HTML5Application {
 		if (value >= 60) {
 			
 			framePeriod = -1;
-			
+			zeroFPS = false;
 		} else if (value > 0) {
 			
 			framePeriod = 1000 / value;
+			zeroFPS = false;
 			
 		} else if (value == 0){
-			nextUpdate = -1;
+			zeroFPS = true;
 		} else {
 			
 			framePeriod = 1000;
+			zeroFPS = false;
 			
 		}
 		
